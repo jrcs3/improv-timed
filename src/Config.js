@@ -10,7 +10,10 @@ class Config extends Component {
 
   handleSubmit = e => {
     const times = this.state.times;
-    this.props.changeConfig({ times, totalSeconds: this.calcTotalSeconds(times) });
+    this.props.changeConfig({
+      times,
+      totalSeconds: this.calcTotalSeconds(times)
+    });
   };
 
   handleChange = e => {
@@ -19,18 +22,18 @@ class Config extends Component {
     this.setState({ times, totalSeconds: this.calcTotalSeconds(times) });
   };
 
-  calcTotalSeconds = (tx) => {
-      const totalSeconds = tx.reduce(this.getSum, 0)
-      return totalSeconds;
-  }
+  calcTotalSeconds = tx => {
+    const totalSeconds = tx.reduce(this.getSum, 0);
+    return totalSeconds;
+  };
 
   getSum = (total, num) => {
     let newNum = parseInt(num);
     if (isNaN(newNum) || !isNumber(newNum)) {
-        newNum = 0;
+      newNum = 0;
     }
     return total + newNum;
-  } 
+  };
 
   addToEnd = () => {
     const times = this.state.times;
@@ -43,6 +46,19 @@ class Config extends Component {
     const times = this.state.times;
     times.splice(index, 1);
     this.setState({ times });
+  };
+
+  displayMinutesAndSeconds = seconds => {
+    const minutes = Math.floor(seconds / 60, 0);
+    console.log(minutes);
+    const netSeconds = seconds - minutes * 60;
+    return `${minutes}:${this.pad(netSeconds, 2)}`;
+  };
+
+  pad = (num, size) => {
+    var s = num + "";
+    while (s.length < size) s = "0" + s;
+    return s;
   };
 
   render() {
@@ -62,12 +78,15 @@ class Config extends Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <h1>Configure Times in Seconds</h1>
-        <ul>
+        <ul className="timeList">
           {listItems}
           <li>
             <button onClick={this.addToEnd}>+</button>
           </li>
-          <li>{this.state.totalSeconds}</li>
+          <li>
+            {this.state.totalSeconds} -{" "}
+            {this.displayMinutesAndSeconds(this.state.totalSeconds)}
+          </li>
         </ul>
         <input type="submit" value="Submit" />
       </form>

@@ -47,3 +47,9 @@ ul.header li a {
 .active {
   background-color: #0099FF;
 }
+.timeList li {
+  list-style: none;
+}
+.timeList li input {
+  width: 40px;
+}

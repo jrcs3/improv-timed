@@ -4,7 +4,8 @@ class Play extends Component {
     super(props);
 
     const times = this.props.times;
-    this.state = { times: times };
+    this.state = { times, step: 0 };
+    this.workingStack = [];
   }
 
   /**
@@ -19,12 +20,28 @@ class Play extends Component {
     return a;
   };
 
-  getSum = (total, num) => {
-    return `${total} ${num},`;
-  }
+  nextStep = () => {
+    if (this.workingStack.length === 0) {
+      return this.finishProcessing();
+    }
+    const top = this.workingStack.pop() * 1000;
+    setTimeout(() => {
+      const step = this.state.step + 1;
+      //step++;
+      this.setState({ step });
+      this.nextStep();
+    }, top);
+  };
+
+  finishProcessing = () => {
+    alert(`All Done!`);
+  };
+
   doClick = () => {
-    const items = this.shuffle(this.state.times);
-    alert(items.reduce(this.getSum, `` ));
+    const items = this.shuffle(Array.from(this.state.times));
+    this.workingStack = items;
+    this.setState({ step: 0 });
+    this.nextStep();
   };
 
   render() {
@@ -32,6 +49,7 @@ class Play extends Component {
       <div>
         <h1>Play</h1>
         <p>Play test and content here!</p>
+        <p>{this.state.step}</p>
         <button onClick={this.doClick}>Do It</button>
       </div>
     );
